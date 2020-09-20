@@ -10,7 +10,7 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <stringAttribute key="org.tizen.common.CONFIG_ATTR_PROJECT_NAME" value="SAPTizenClient"/>
-<stringAttribute key="org.tizen.commonCONFIG_ATTR_DEVICE_SERIAL_NO" value="192.168.1.23:26101"/>
+<stringAttribute key="org.tizen.commonCONFIG_ATTR_DEVICE_SERIAL_NO" value="emulator-26101"/>
 <intAttribute key="org.tizen.web.zimlaunch.LATEST_LAUNCH_TYPE" value="0"/>
 <booleanAttribute key="org.tizen.web.zimlaunch.LIVE_EDITING" value="false"/>
 <intAttribute key="org.tizen.web.zimlaunch.TIMEOUT_VALUE" value="300"/>

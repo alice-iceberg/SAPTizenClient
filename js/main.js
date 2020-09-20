@@ -21,10 +21,10 @@ function startHeartRateCollection() {
 			saveHeartRateSample(timestamp + ',' + hrmInfo.heartRate);
 		} else if (hrmInfo.heartRate <= 0) {
 			tizen.application.launch("WGvCVP8H7a.SAPTizenClient");
-			/*if (!appVibrate) {
+			if (!appVibrate) {
 				appVibrate = true;
 				navigator.vibrate(700);
-			}*/
+			}
 		}
 	});
 	console.log('HRM started');
@@ -84,7 +84,7 @@ function startLinearAccelerationCollection() {
 		linearAccelerationSensor.setChangeListener(function(AccData) {
 			var timestamp = new Date().getTime();
 			saveAccelerometerSample(timestamp + "," + AccData.x + "," + AccData.y + "," + AccData.z);
-		}, 50);
+		}, 100);
 	});
 	console.log('Linear acc collection started');
 }
@@ -203,9 +203,6 @@ window.onload = function() {
 };
 
 // GUI
-function aboutClick() {
-	alert("It collects health and behavioral data for a stress sensing study. Have a nice day =)");
-}
 function setConnectionStatusHTML(status) {
 	if (status) {
 		statusText.style.color = '#2ecc71';

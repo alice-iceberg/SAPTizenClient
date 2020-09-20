@@ -23,6 +23,7 @@ body {
 	transform: translate(-50%, -50%);
 }
 
+
 #status_text {
 	display: block;
 	
@@ -30,16 +31,23 @@ body {
 	font-size: 2.0em;
 }
 
+#connect_button {
+	background-image: linear-gradient(to bottom,#90F7EC 0%, #32CCBC 100%) ;	
+}
+
+#exit_button {
+	border-style: solid;
+    border-color: red;
+    background: #222222;
+}
+
 .button {
 	display: block;
-	
 	margin-top: 20px;
-	
-	background: #2ecc71;
     padding: 5px;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius:30px;
     font-size: 2em;
     text-decoration: none;
 }
