@@ -10,7 +10,6 @@ var appVibrate = false;
 var documentsDir;
 
 
-// sensing (each data source separately)
 function startHeartRateCollection() {
 	appStatus = true;	
 	tizen.humanactivitymonitor.start('HRM', function(hrmInfo) {
@@ -26,8 +25,9 @@ function startHeartRateCollection() {
 				navigator.vibrate(700);
 			}
 		}
+		
 	});
-	console.log('HRM started');
+	console.log('HRM started');	
 }
 function startSleepMonitoring() {
 	var timestamp = new Date().getTime();
@@ -84,7 +84,7 @@ function startLinearAccelerationCollection() {
 		linearAccelerationSensor.setChangeListener(function(AccData) {
 			var timestamp = new Date().getTime();
 			saveAccelerometerSample(timestamp + "," + AccData.x + "," + AccData.y + "," + AccData.z);
-		}, 100);
+		});
 	});
 	console.log('Linear acc collection started');
 }
@@ -130,15 +130,56 @@ function startActivityDetection() {
 		console.log("activity type: " + activityInfo.type);
 	});
 }
+
+function stopHeartRateCollection(){
+	tizen.humanactivitymonitor.stop('HRM');
+	console.log('HRM stopped');
+}
+
+function stopHRMRawCollection(){
+	ppgSensor.stop();
+	console.log('PPG stopped');
+}
+
+function stopLinearAccelerationCollection(){
+	linearAccelerationSensor.stop();
+	console.log('Linear Acceleration stopped');
+}
 // sensing overall
 function startSensing() {
-	startHeartRateCollection();
+	
+	var HRM_DURATION = 5000; //5secs
+	var HRM_PERIOD = HRM_DURATION + 300000; //5mins
+	var PPG_DURATION = 5000;
+	var PPG_PERIOD = PPG_DURATION + 300000; //5mins
+	var ACC_DURATION = 120000; //2mins
+	var ACC_PERIOD = ACC_DURATION + 1200000; //20mins
+	
+	
 	startSleepMonitoring();
 	startGPS();
-	startHRMRawCollection();
-	startLinearAccelerationCollection();
 	startAmbientLightCollection();
 	startActivityDetection();
+	
+	
+	//collect HRM every 5 minutes for 5 seconds
+	setInterval(startHeartRateCollection, HRM_PERIOD);	
+	setTimeout(function(){
+		setInterval(stopHeartRateCollection, HRM_PERIOD);
+	}, HRM_DURATION);
+	
+	//collect PPG every 5 minutes for 5 seconds
+	setInterval(startHRMRawCollection, PPG_PERIOD);	
+	setTimeout(function(){
+		setInterval(stopHRMRawCollection, PPG_PERIOD);
+	}, PPG_DURATION);
+   
+
+	//collect Linear Acceleration every 20 minutes for 2 minutes
+	setInterval(startLinearAccelerationCollection, ACC_PERIOD);	
+	setTimeout(function(){
+		setInterval(stopLinearAccelerationCollection, ACC_PERIOD);
+	}, ACC_DURATION);
 }
 
 // onstart
@@ -205,7 +246,7 @@ window.onload = function() {
 // GUI
 function setConnectionStatusHTML(status) {
 	if (status) {
-		statusText.style.color = '#2ecc71';
+		statusText.style.color = '#90F7EC';
 		statusText.innerHTML = 'BT : CONNECTED';
 		connectButton.style.display = "none";
 	} else {
