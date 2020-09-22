@@ -20,10 +20,10 @@ function startHeartRateCollection() {
 			saveHeartRateSample(timestamp + ',' + hrmInfo.heartRate);
 		} else if (hrmInfo.heartRate <= 0) {
 			tizen.application.launch("WGvCVP8H7a.SAPTizenClient");
-			if (!appVibrate) {
-				appVibrate = true;
-				navigator.vibrate(700);
-			}
+//			if (!appVibrate) {
+//				appVibrate = true;
+//				navigator.vibrate(700);
+//			}
 		}
 		
 	});
@@ -238,7 +238,7 @@ window.onload = function() {
 	tizen.power.setScreenStateChangeListener(function(oldState, newState) {
 		if (newState !== "SCREEN_BRIGHT" || !tizen.power.isScreenOn()) {
 			tizen.power.turnScreenOn();
-			tizen.power.setScreenBrightness(1);
+			tizen.power.setScreenBrightness(0.7); // 70%
 		}
 	});
 };
