@@ -18,8 +18,10 @@ function startHeartRateCollection() {
 			appVibrate = false;
 			saveRRIntervalSample(timestamp + ',' + hrmInfo.rRInterval);
 			saveHeartRateSample(timestamp + ',' + hrmInfo.heartRate);
+			console.log("HRM: " + hrmInfo.heartRate);
 		} else if (hrmInfo.heartRate <= 0) {
 			tizen.application.launch("WGvCVP8H7a.SAPTizenClient");
+			console.log("HRM: " + hrmInfo.heartRate);
 //			if (!appVibrate) {
 //				appVibrate = true;
 //				navigator.vibrate(700);
@@ -148,9 +150,9 @@ function stopLinearAccelerationCollection(){
 // sensing overall
 function startSensing() {
 	
-	var HRM_DURATION = 5000; //5secs
+	var HRM_DURATION = 25000; //25secs (~15 to initialize)
 	var HRM_PERIOD = HRM_DURATION + 300000; //5mins
-	var PPG_DURATION = 5000;
+	var PPG_DURATION = 25000;
 	var PPG_PERIOD = PPG_DURATION + 300000; //5mins
 	var ACC_DURATION = 120000; //2mins
 	var ACC_PERIOD = ACC_DURATION + 1200000; //20mins
@@ -162,7 +164,7 @@ function startSensing() {
 	startActivityDetection();
 	
 	
-	//collect HRM every 5 minutes for 5 seconds
+	//collect HRM every 5 minutes for 25 seconds
 	setInterval(startHeartRateCollection, HRM_PERIOD);	
 	setTimeout(function(){
 		setInterval(stopHeartRateCollection, HRM_PERIOD);
