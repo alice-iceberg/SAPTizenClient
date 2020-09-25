@@ -125,6 +125,11 @@ function stopHRMRawCollection(){
 	console.log('PPG stopped');
 }
 
+function stopAmbientLightCollection(){
+	lightSensor.stop();
+	console.log('Light sensor stopped');
+}
+
 function stopLinearAccelerationCollection(){
 	linearAccelerationSensor.stop();
 	console.log('Linear Acceleration stopped');
@@ -136,9 +141,10 @@ function startSensing() {
 	var HRM_PERIOD = HRM_DURATION + 300000; //5mins
 	var PPG_DURATION = 25000;
 	var PPG_PERIOD = PPG_DURATION + 300000; //5mins
-	var ACC_DURATION = 120000; //2mins
-	var ACC_PERIOD = ACC_DURATION + 1200000; //20mins
-	
+	var ACC_DURATION = 60000; //1min
+	var ACC_PERIOD = ACC_DURATION + 600000; //10mins
+	var LIGHT_DURATION = 15000;
+	var LIGHT_PERIOD = LIGHT_DURATION + 600000; // 10 minutes
 	
 	startSleepMonitoring();
 	startAmbientLightCollection();
@@ -157,8 +163,14 @@ function startSensing() {
 		setInterval(stopHRMRawCollection, PPG_PERIOD);
 	}, PPG_DURATION);
    
+	//collect Ambient Light every 10 minutes for 15 seconds
+	setInterval(startAmbientLightCollection, LIGHT_PERIOD);	
+	setTimeout(function(){
+		setInterval(stopAmbientLightCollection, LIGHT_PERIOD);
+	}, LIGHT_DURATION);
+	
 
-	//collect Linear Acceleration every 20 minutes for 2 minutes
+	//collect Linear Acceleration every 10 minutes for 1 minutes
 	setInterval(startLinearAccelerationCollection, ACC_PERIOD);	
 	setTimeout(function(){
 		setInterval(stopLinearAccelerationCollection, ACC_PERIOD);
