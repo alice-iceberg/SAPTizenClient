@@ -1,9 +1,6 @@
 /* global sendMessage, documentsDir, onError */
-/* exported saveAmbientLightSample, saveActivitySample, saveAccelerometerSample, saveHeartRateSample, savePPGSample, saveLocationSample, saveSleepSample, saveRRIntervalSample, submitFilesToAndroidAgent, bindFilestreams*/
+/* exported saveAmbientLightSample, saveActivitySample, saveAccelerometerSample, saveHeartRateSample, savePPGSample, saveSleepSample, saveRRIntervalSample, submitFilesToAndroidAgent, bindFilestreams*/
 
-var locationFilename = 'location.txt', locationDataSource = 35, locationCanWrite = false, locationSending = false, locationFilestream = {
-	value : null
-};
 var rrIntervalFilename = 'rrInterval.txt', rrIntervalDataSource = 33, rrIntervalCanWrite = false, rrIntervalSending = false, rrIntervalFilestream = {
 	value : null
 };
@@ -27,34 +24,7 @@ var accelerometerFilename = 'accelerometer.txt', accelerometerDataSource = 34, a
 };
 
 // binding each filestream separately
-function bindLocation() {
-	// 1. location
-	tizen.filesystem.resolve('documents/' + locationFilename, function(file) {
-		// location file exists
-		file.openStream('w', function(fs) {
-			locationFilestream.value = fs;
-			locationCanWrite = true;
-		}, function(e) {
-			console.log('failed to bind to an existing file : ' + locationFilename + ', error : ' + e.message);
-			locationCanWrite = false;
-		});
-	}, function(error) {
-		// location file is missing
-		var file = documentsDir.createFile(locationFilename);
-		if (file === null) {
-			console.log('failed to create a new file : ' + locationFilename + ' error: '+ error);
-			locationCanWrite = false;
-		} else {
-			file.openStream('w', function(fs) {
-				locationFilestream.value = fs;
-				locationCanWrite = true;
-			}, function(e) {
-				console.log('failed to bind to a new file : ' + locationFilename + ', error : ' + e.message);
-				locationCanWrite = false;
-			});
-		}
-	});
-}
+
 function bindRrInterval() {
 	// 2. rrInterval
 	tizen.filesystem.resolve('documents/' + rrIntervalFilename, function(file) {
@@ -253,7 +223,6 @@ function bindAccelerometer() {
 }
 // binding all filestreams
 function bindFilestreams() {
-	bindLocation();
 	bindRrInterval();
 	bindPpg();
 	bindActivity();
@@ -264,30 +233,7 @@ function bindFilestreams() {
 }
 
 // submitting each data source separately
-function submitLocations() {
-	// 1. location
-	locationCanWrite = false;
-	locationFilestream.value.close();
-	documentsDir.moveTo('documents/' + locationFilename, 'documents/old_' + locationFilename, true, function() {
-		bindLocation();
-		tizen.filesystem.resolve('documents/old_' + locationFilename, function(file) {
-			file.readAsText(function(str) {
-				locationSending = true;
-				if (str.length === 0 || sendMessage(str)) {
-					documentsDir.deleteFile('documents/old_' + locationFilename, function() {
-						console.log('old_' + locationFilename + ' deleted');
-					}, function(e) {
-						console.log('failed to delete ' + locationFilename + ', error : ' + e.message);
-					});
-				}
-				locationSending = false;
-			}, null, 'UTF-8');
-		}, null);
-	}, function(error) {
-		console.log('failed to move the file ' + locationFilename + ' error: '+ error);
-		onError();
-	});
-}
+
 function submitRrInterval() {
 	// 2. rrInterval
 	rrIntervalCanWrite = false;
@@ -458,9 +404,7 @@ function submitAccelerometer() {
 }
 // submitting all data sources
 function submitFilesToAndroidAgent() {
-	if (!locationSending) {
-		submitLocations();
-	}
+
 	if (!rrIntervalSending) {
 		submitRrInterval();
 	}
@@ -485,11 +429,6 @@ function submitFilesToAndroidAgent() {
 }
 
 // saving a sampled data
-function saveLocationSample(sample) {
-	if (locationCanWrite) {
-		locationFilestream.value.write(locationDataSource + ',' + sample + '\n');
-	}
-}
 function saveRRIntervalSample(sample) {
 	if (rrIntervalCanWrite) {
 		rrIntervalFilestream.value.write(rrIntervalDataSource + ',' + sample + '\n');

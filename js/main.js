@@ -1,4 +1,4 @@
-/* global activityInfo, saveAmbientLightSample, saveActivitySample, saveAccelerometerSample, saveHeartRateSample, savePPGSample, saveLocationSample, saveSleepSample, saveRRIntervalSample, connect, bindFilestreams */
+/* global activityInfo, saveAmbientLightSample, saveActivitySample, saveAccelerometerSample, saveHeartRateSample, savePPGSample, saveSleepSample, saveRRIntervalSample, connect, bindFilestreams */
 /* exported exitApp, aboutClick */
 // variables
 var ppgSensor, linearAccelerationSensor, lightSensor;
@@ -39,25 +39,7 @@ function startSleepMonitoring() {
 	});
 	console.log('sleep monitoring started');
 }
-function startGPS() {
-	tizen.ppm.requestPermission("http://tizen.org/privilege/location", function() {
-		var timestamp = new Date().getTime();
-		tizen.humanactivitymonitor.start('GPS', function(info) {
-			var gpsInfo = info.gpsInfo;
-			for (var index = 0; index < gpsInfo.length; index++) {
-				saveLocationSample(timestamp + "," + gpsInfo[index].latitude + "," + gpsInfo[index].longitude);
-			}
-		}, function(error) {
-			console.log('Error occurred. Name:' + error.name + ', message: ' + error.message);
-		}, {
-			callbackInterval : 150000,
-			sampleInterval : 1000
-		});
-		console.log('gps started');
-	}, function(error) {
-		console.log('failed to start GPS monitoring, permission error : ' + error.message);
-	});
-}
+
 function startHRMRawCollection() {
 	ppgSensor = tizen.sensorservice.getDefaultSensor("HRM_RAW");
 	ppgSensor.start(function() {
@@ -159,7 +141,6 @@ function startSensing() {
 	
 	
 	startSleepMonitoring();
-	startGPS();
 	startAmbientLightCollection();
 	startActivityDetection();
 	
