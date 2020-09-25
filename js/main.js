@@ -147,7 +147,6 @@ function startSensing() {
 	var LIGHT_PERIOD = LIGHT_DURATION + 600000; // 10 minutes
 	
 	startSleepMonitoring();
-	startAmbientLightCollection();
 	startActivityDetection();
 	
 	
